@@ -3,19 +3,32 @@ public class Main {
     public static void main(String[] args) {
         int[] prices = {13, 17, 19, 25, 25, 25, 25, 25, 25, 27, 30};
 
-        System.out.println("Для 31: " + countMore(prices, 31)); // 0
-        System.out.println("Для 26: " + countMore(prices, 26)); // 2
-        System.out.println("Для 25: " + countMore(prices, 25)); // 2
-        System.out.println("Для 20: " + countMore(prices, 20)); // 8
+        printResult(prices, 31); // 0
+        printResult(prices, 26); // 2
+        printResult(prices, 25); // 2
+        printResult(prices, 20); // 8
+    }
+
+    public static void printResult(int[] prices, int money) {
+        int count = countMore(prices, money);
+        System.out.print("Для " + money + ": " + count + " — ");
+
+        if (count == 0) {
+            System.out.println("Все товары дешевле");
+        } else if (money == 25 || money == 26) {
+            System.out.println("Дороже только два товара");
+        } else if (money == 20) {
+            System.out.println("Дороже все начиная с 25");
+        } else {
+            System.out.println("Часть товаров дороже");
+        }
     }
 
     public static int countMore(int[] prices, int money) {
-        // Если первый товар уже дороже — все недоступны
         if (prices[0] > money) {
             return prices.length;
         }
 
-        // Если даже последний товар дешевле — все доступны
         if (prices[prices.length - 1] <= money) {
             return 0;
         }
@@ -26,18 +39,15 @@ public class Main {
         while (left < right) {
             int middle = (left + right) / 2;
 
-            // Если в middle первый недоступный товар,
-            // то все после него тоже недоступны — идем влево
-            if (prices[middle] > money) {
-                right = middle;
-            }
-            // Если товар по цене подходит — ищем правее
-            else {
+            // Если товар доступен, ищем правее
+            if (prices[middle] <= money) {
                 left = middle + 1;
+            } else {
+                // Иначе ищем левее
+                right = middle;
             }
         }
 
-        // После выхода из цикла left — индекс первого недоступного товара
         return prices.length - left;
     }
 }
