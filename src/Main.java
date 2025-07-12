@@ -3,10 +3,10 @@ public class Main {
     public static void main(String[] args) {
         int[] prices = {13, 17, 19, 25, 25, 25, 25, 25, 25, 27, 30};
 
-        printResult(prices, 31); // 0
-        printResult(prices, 26); // 2
-        printResult(prices, 25); // 2
-        printResult(prices, 20); // 8
+        printResult(prices, 31);
+        printResult(prices, 26);
+        printResult(prices, 25);
+        printResult(prices, 20);
     }
 
     public static void printResult(int[] prices, int money) {
@@ -15,12 +15,25 @@ public class Main {
 
         if (count == 0) {
             System.out.println("Все товары дешевле");
-        } else if (money == 25 || money == 26) {
-            System.out.println("Дороже только два товара");
-        } else if (money == 20) {
-            System.out.println("Дороже все начиная с 25");
         } else {
-            System.out.println("Часть товаров дороже");
+            int index = prices.length - count;
+            int firstUnavailablePrice = prices[index];
+
+            // Считаем, сколько товаров стоят ровно эту цену
+            int samePriceCount = 0;
+            for (int price : prices) {
+                if (price == firstUnavailablePrice) {
+                    samePriceCount++;
+                }
+            }
+
+            if (count == 1) {
+                System.out.println("Дороже только один товар");
+            } else if (count == samePriceCount) {
+                System.out.println("Дороже все начиная с " + firstUnavailablePrice);
+            } else {
+                System.out.println("Часть товаров дороже начиная с " + firstUnavailablePrice);
+            }
         }
     }
 
@@ -39,11 +52,9 @@ public class Main {
         while (left < right) {
             int middle = (left + right) / 2;
 
-            // Если товар доступен, ищем правее
             if (prices[middle] <= money) {
                 left = middle + 1;
             } else {
-                // Иначе ищем левее
                 right = middle;
             }
         }
